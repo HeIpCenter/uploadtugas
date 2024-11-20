@@ -5,6 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Website Deepfake</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* CSS untuk membuat kontainer scrollable */
+        #responses {
+            max-height: 400px; /* Atur tinggi maksimum sesuai kebutuhan */
+            overflow-y: auto;   /* Scroll vertikal jika isi melebihi tinggi */
+        }
+        
+        .question {
+            border: 1px solid #e5e7eb; /* Border tambahan untuk setiap pertanyaan */
+            margin: 10px 0;            /* Jarak antar pertanyaan */
+            padding: 10px;             /* Padding di sekitar teks */
+            border-radius: 5px;        /* Sudut rounded */
+            background: #f9fafb;       /* Background terang */
+        }
+    </style>
 </head>
 <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
 
@@ -21,10 +36,9 @@
             <input 
                 type="text" 
                 id="name" 
-                placeholder="Masukkan nama Anda"
+                placeholder="Masukkan nama Anda" 
                 required
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            >
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
         </div>
         <div class="mb-6">
             <label class="block text-gray-700 text-sm font-bold mb-2" for="question">
@@ -32,10 +46,9 @@
             </label>
             <textarea 
                 id="question" 
-                placeholder="Masukkan pertanyaan Anda"
+                placeholder="Masukkan pertanyaan Anda" 
                 required
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            ></textarea>
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"></textarea>
         </div>
         <div class="flex items-center justify-between">
             <button 
@@ -46,20 +59,17 @@
         </div>
     </form>
 
-    <div id="responses" class="w-full max-w-lg bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"></div>
+    <div id="responses" class="w-full max-w-lg bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <h2 class="text-xl font-bold mb-4">Pertanyaan yang telah diajukan:</h2>
+        <div id="questionsList"></div> <!-- Tempat untuk tampilan daftar pertanyaan -->
+    </div>
 
     <script>
-        // Load existing responses from the database
-        async function loadQuestions() {
-            const response = await fetch('/api/questions'); // Ganti endpoint
+        const loadQuestions = async () => {
+            const response = await fetch('/api/questions');
             const questions = await response.json();
-            const responsesDiv = document.getElementById('responses');
-            questions.forEach(function(question) {
-                responsesDiv.innerHTML += `<p class="text-gray-700 mb-2"><strong>${question.name}:</strong> ${question.question}</p>`;
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', loadQuestions); // Load questions on page load
+            displayQuestions(questions);
+        };
 
         document.getElementById('inputForm').onsubmit = async function(event) {
             event.preventDefault();
@@ -67,11 +77,7 @@
             const name = document.getElementById('name').value;
             const question = document.getElementById('question').value;
 
-            // Display the input
-            const responsesDiv = document.getElementById('responses');
-            responsesDiv.innerHTML += `<p class="text-gray-700 mb-2"><strong>${name}:</strong> ${question}</p>`;
-
-            // Send to the server
+            // Kirim data ke API
             const response = await fetch('/api/questions', {
                 method: 'POST',
                 headers: {
@@ -84,10 +90,27 @@
                 alert('Arigato Gosaimas');
                 document.getElementById('name').value = '';
                 document.getElementById('question').value = '';
+                loadQuestions(); // Memuat ulang pertanyaan
             } else {
-                alert('Failed to submit the question.');
+                alert('Gagal mengirim pertanyaan.');
             }
         };
+
+        const displayQuestions = (questions) => {
+            const questionsList = document.getElementById('questionsList');
+            questionsList.innerHTML = ''; // Mengosongkan list sebelumnya
+            questions.forEach((item, index) => {
+                questionsList.innerHTML += `
+                    <div class="question">
+                        <div><strong>${index + 1}. Nama:</strong> ${item.name}</div>
+                        <div><strong>Pertanyaan:</strong> ${item.question}</div>
+                    </div>
+                `;
+            });
+        };
+
+        // Memuat pertanyaan saat halaman dibuka
+        loadQuestions();
     </script>
 </body>
 </html>
