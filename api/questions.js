@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 
 const pool = new Pool({
   connectionString:
-    "postgres://imrgdavu:Aqu4syzrpkJ0F56PQUe4tzCuGObMVlOk@manny.db.elephantsql.com/imrgdav", // Ganti dengan URL koneksi Anda
+    "postgres://imrgdavu:Aqu4syzrpkJ0F56PQUe4tzCuGObMVlOk@manny.db.elephantsql.com/imrgdavu", // Ganti dengan URL koneksi Anda
 });
 
 // Ganti dengan token bot Telegram dan chat ID Anda berikut ini
