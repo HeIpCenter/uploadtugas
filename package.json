@@ -1,0 +1,19 @@
+{
+  "name": "my-elephant-sql-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node api/questions.js",
+    "dev": "nodemon api/questions.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.7.1",
+    "node-fetch": "^2.6.7"
+  },
+  "devDependencies": {},
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
